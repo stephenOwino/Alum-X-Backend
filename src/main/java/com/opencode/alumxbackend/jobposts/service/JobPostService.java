@@ -13,4 +13,5 @@ public interface JobPostService {
     List<JobPostResponse> getPostsByUser(Long userId);
     void addComment(String postId, Long userId, CommentRequest request);
 
+    void likePost(String postId, Long userId);
 }

@@ -1,6 +1,5 @@
 package com.opencode.alumxbackend.resume.model;
 
-import com.opencode.alumxbackend.users.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,9 +17,8 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    @Column(nullable = false, unique = true)
+    private String userId;
 
     @Column(nullable = false)
     private String fileName;
@@ -36,6 +34,4 @@ public class Resume {
     private Integer version;
     private boolean isDeleted;
     private LocalDateTime uploadedAt;
-    // made resume model better
 }
-

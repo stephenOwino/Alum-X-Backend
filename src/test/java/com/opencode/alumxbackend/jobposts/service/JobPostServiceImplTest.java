@@ -1,6 +1,6 @@
 package com.opencode.alumxbackend.jobposts.service;
 
-import com.opencode.alumxbackend.common.exception.ResourceNotFoundException;
+import com.opencode.alumxbackend.common.exception.Errors.ResourceNotFoundException;
 import com.opencode.alumxbackend.jobposts.dto.JobPostResponse;
 import com.opencode.alumxbackend.jobposts.model.JobPost;
 import com.opencode.alumxbackend.jobposts.repository.JobPostRepository;

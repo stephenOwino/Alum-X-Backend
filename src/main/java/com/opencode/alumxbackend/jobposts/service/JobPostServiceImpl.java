@@ -1,7 +1,7 @@
 package com.opencode.alumxbackend.jobposts.service;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -9,6 +9,8 @@ import java.util.UUID;
 import com.opencode.alumxbackend.jobposts.dto.CommentRequest;
 import com.opencode.alumxbackend.jobposts.model.JobPostComment;
 import com.opencode.alumxbackend.jobposts.repository.CommentRepository;
+import com.opencode.alumxbackend.jobposts.model.JobPostLike;
+import com.opencode.alumxbackend.jobposts.repository.JobPostLikeRepository;
 import org.springframework.stereotype.Service;
 
 import com.opencode.alumxbackend.common.exception.Errors.BadRequestException;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class JobPostServiceImpl implements JobPostService{
+    private final JobPostLikeRepository jobPostLikeRepository;
     private final JobPostRepository jobPostRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -61,6 +64,28 @@ public class JobPostServiceImpl implements JobPostService{
 
 
     @Override
+    public void likePost(String postId, Long userId) {
+        // 1. Check if post exists and retrieve it
+        JobPost post = jobPostRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with postId: " + postId));
+        // 2. Check if user exists and retrieve it
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        
+        // 3. Create and save the like - let database handle uniqueness atomically
+        try {
+            JobPostLike like = JobPostLike.builder()
+                    .jobPost(post)
+                    .user(user)
+                    .build();
+            jobPostLikeRepository.save(like);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // Unique constraint violation - user already liked this post
+            throw new BadRequestException("User has already liked this post");
+        }
+    }
+
+    @Override
     public JobPost createJobPost(JobPostRequest request) {
 
 
@@ -82,9 +107,9 @@ public class JobPostServiceImpl implements JobPostService{
 
 
                 try{
-                    new URL(url); // this will chck wether hte url is coorect
+                    URI.create(url).toURL(); // this will chck whether url is correct
                 }
-                catch(MalformedURLException e){
+                catch(IllegalArgumentException | MalformedURLException e){
                     throw new BadRequestException("invalid url: " + url);
                 }
             });
