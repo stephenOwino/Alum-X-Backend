@@ -21,7 +21,7 @@ public class ResumeService {
     @Value("${resume.upload.dir}")
     private String uploadDir;
 
-    public void     uploadResume(String userId, MultipartFile file) throws Exception {
+    public void uploadResume(String userId, MultipartFile file) throws Exception {
 
         if (file.getSize() > 5 * 1024 * 1024) {
             throw new InvalidResumeException("File size must be less than 5MB");
