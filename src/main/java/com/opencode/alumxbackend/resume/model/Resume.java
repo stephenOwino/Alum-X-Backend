@@ -36,5 +36,6 @@ public class Resume {
     private Integer version;
     private boolean isDeleted;
     private LocalDateTime uploadedAt;
+    // made resume model better
 }
 
