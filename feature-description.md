@@ -47,3 +47,11 @@ Allows users (especially alumni) to share job opportunities with the community.
 - Validates that the post has proper details like minimum 50 characters description
 - Checks if image URLs are valid when users add pictures to job posts
 - Helps students discover career opportunities shared by alumni
+
+## Networking Service
+ 
+-Helps users connect with each other, like making friends or following someone.
+-Keeps track of who is connected to whom in the app.
+-Lets users send and accept connection requests.
+-Works quietly in the background so other features like chat or profile suggestions know your connections.
+-Makes it easy to build a network of people inside the app.
