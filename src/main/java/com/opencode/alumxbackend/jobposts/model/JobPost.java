@@ -2,9 +2,10 @@ package com.opencode.alumxbackend.jobposts.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,5 +27,4 @@ public class JobPost {
     private List<String> imageUrls;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
 }
