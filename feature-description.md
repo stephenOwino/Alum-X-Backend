@@ -27,3 +27,23 @@ It tells about the detials about the specified user. User has the fields - skill
 - It verifies wheter the user with that user id is present.
 - It reads the data, and responds with all the fields.
 - It returns empty list for a field, if field is null, or empty. 
+
+
+## Resume Service
+
+Enables the user to upload their resume, and get the resume based on the user id.
+
+- To upload a resume, it gets the user id, and the resume file.
+- It verifies wheter the file is less than 5MB, and of type pdf or document.
+- It reads the data, and responds with all the fields.
+- It also returns with the resume file, based on the user id.
+
+## Job Post Service
+
+Allows users (especially alumni) to share job opportunities with the community.
+
+- Lets alumni create job posts with all the details.
+- Stores information about internships, full-time jobs, part-time jobs, or contract work  
+- Validates that the post has proper details like minimum 50 characters description
+- Checks if image URLs are valid when users add pictures to job posts
+- Helps students discover career opportunities shared by alumni

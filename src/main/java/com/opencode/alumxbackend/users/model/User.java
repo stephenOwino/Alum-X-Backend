@@ -1,10 +1,6 @@
 package com.opencode.alumxbackend.users.model;
 
-
-import com.opencode.alumxbackend.jobposts.model.JobPostComment;
-
 import com.opencode.alumxbackend.resume.model.Resume;
-
 import jakarta.persistence.*;
 import lombok.*;
 
