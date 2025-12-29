@@ -1,17 +1,28 @@
 package com.opencode.alumxbackend;
 
-import io.github.cdimascio.dotenv.Dotenv;
-import lombok.AllArgsConstructor;
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
+import io.github.cdimascio.dotenv.Dotenv;
+import lombok.AllArgsConstructor;
 
 
 @AllArgsConstructor
 @SpringBootApplication
+@ComponentScan(
+    basePackages = "com.opencode.alumxbackend",
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.REGEX,
+        pattern = "com\\.opencode\\.alumxbackend\\.basics\\..*"
+    )
+)
 public class AlumXBackendApplication implements CommandLineRunner {
 
     private final DataSource dataSource;

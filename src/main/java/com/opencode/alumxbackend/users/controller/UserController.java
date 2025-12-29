@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +45,7 @@ public class UserController {
 //            throw new UnauthorizedAccessException("Invalid or missing X-DUMMY-TOKEN header");
 //        }
 
-        logger.info("Creating new user: " + request.getUsername() + " with role: " + request.getRole());
+        logger.info(String.format("Creating new user: %s with role: %s", request.getUsername(), request.getRole()));
         User user = userService.createUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
@@ -69,6 +70,8 @@ public class UserController {
         logger.info("Fetching all users");
         List<UserResponseDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
     @PatchMapping("/{userId}/profile")
     public ResponseEntity<UserProfileDTO> updateUserProfile(
             @PathVariable Long userId,
