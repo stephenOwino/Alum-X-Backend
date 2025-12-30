@@ -116,7 +116,7 @@ public class User {
     @Column
     private String currentCompany;
 
-    @Column
+    @Column(name = "role_current")
     private String currentRole;
 
     @Column

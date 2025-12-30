@@ -1,10 +1,16 @@
 package com.opencode.alumxbackend.users.service;
 
+import java.util.List;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.opencode.alumxbackend.common.exception.Errors.BadRequestException;
 import com.opencode.alumxbackend.common.exception.Errors.ResourceNotFoundException;
 import com.opencode.alumxbackend.users.dto.UserProfileDTO;
 import com.opencode.alumxbackend.users.dto.UserProfileUpdateRequestDto;
 import com.opencode.alumxbackend.users.dto.UserRequest;
+import com.opencode.alumxbackend.users.dto.UserResponseDto;
 import com.opencode.alumxbackend.users.model.User;
 import com.opencode.alumxbackend.users.model.UserRole;
 import com.opencode.alumxbackend.users.repository.UserRepository;
@@ -12,10 +18,6 @@ import com.opencode.alumxbackend.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +77,23 @@ public class UserServiceImpl implements UserService {
         return mapToProfileDTO(user);
     }
 
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
+    private UserResponseDto mapToResponseDTO(User user) {
+        return UserResponseDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
     private UserProfileDTO mapToProfileDTO(User user) {
         return UserProfileDTO.builder()
                 // Identity
