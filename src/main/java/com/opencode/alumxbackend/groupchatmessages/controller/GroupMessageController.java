@@ -35,10 +35,10 @@ public class GroupMessageController {
     }
     
     // working: keeping this the same 
-    @GetMapping("/{groupId}/messages/user/{userId}")
+    @GetMapping("/{groupId}/messages/user")
     public List<GroupMessageResponse> getMessages(
             @PathVariable Long groupId,
-            @PathVariable Long userId
+            @RequestHeader("X-USER-ID") Long userId
     ) {
         return service.fetchMessages(groupId, userId);
     }

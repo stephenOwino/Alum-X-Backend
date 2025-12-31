@@ -3,28 +3,37 @@ package com.opencode.alumxbackend.groupchatmessages.service;
 import com.opencode.alumxbackend.groupchat.model.GroupChat;
 import com.opencode.alumxbackend.groupchat.model.Participant;
 import com.opencode.alumxbackend.groupchatmessages.dto.GroupMessageResponse;
+import com.opencode.alumxbackend.groupchatmessages.dto.GroupMessageSearchRequest;
+import com.opencode.alumxbackend.groupchatmessages.dto.GroupMessageSearchResponse;
 import com.opencode.alumxbackend.groupchatmessages.dto.SendGroupMessageRequest;
 import com.opencode.alumxbackend.groupchatmessages.exception.GroupNotFoundException;
 import com.opencode.alumxbackend.groupchatmessages.exception.InvalidMessageException;
 import com.opencode.alumxbackend.groupchatmessages.exception.UserNotMemberException;
 import com.opencode.alumxbackend.groupchatmessages.model.GroupMessage;
 import com.opencode.alumxbackend.groupchatmessages.repository.GroupMessageRepository;
+import com.opencode.alumxbackend.users.repository.UserRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import com.opencode.alumxbackend.groupchat.repository.GroupChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 @Service
 @RequiredArgsConstructor
 public class GroupMessageServiceImpl implements GroupMessageService {
 
+    private final UserRepository userRepository;
     private final GroupMessageRepository messageRepository;
     private final GroupChatRepository groupChatRepository;
 
     @Override
-
     public GroupMessageResponse sendMessage(
             Long groupId,
             SendGroupMessageRequest request) {
@@ -102,5 +111,45 @@ public class GroupMessageServiceImpl implements GroupMessageService {
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    @Override
+    public GroupMessageSearchResponse searchForMessage(Long groupId, Long userId, GroupMessageSearchRequest request) {
+
+        GroupChat groupChat = groupChatRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group id not found: " + groupId));
+
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("User not found with id: " + userId);
+        }
+
+        boolean isMember = groupChat.getParticipants()
+                .stream()
+                .anyMatch(p -> p.getUserId().equals(userId));
+
+        if (!isMember) {
+            throw new RuntimeException("User not in group! Access Denied");
+        }
+
+
+        String query = request.getQuery().trim();
+
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by("createdAt").ascending());
+
+        Page<GroupMessage> resultPage = messageRepository.findByGroupIdAndContentContainingIgnoreCase(groupId, query, pageable);
+
+        List<GroupMessageResponse> messages = resultPage.getContent()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+
+        return GroupMessageSearchResponse.builder()
+                .groupId(groupId)
+                .messages(messages)
+                .totalMatches(resultPage.getTotalElements())
+                .page(resultPage.getNumber())
+                .totalPages(resultPage.getTotalPages())
+                .build();
+
     }
 }
