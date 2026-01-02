@@ -65,7 +65,6 @@ public class JobPostController {
             @PathVariable Long jobId,
             @RequestParam Long userId
     ) {
-        // TODO: Replace @RequestParam userId with @AuthenticationPrincipal once JWT auth is implemented
         // Currently using request-based userId due to incomplete auth setup.
         // In production, userId should be extracted from SecurityContext/JWT token.
         if (token == null || !token.equals(DUMMY_TOKEN)) {

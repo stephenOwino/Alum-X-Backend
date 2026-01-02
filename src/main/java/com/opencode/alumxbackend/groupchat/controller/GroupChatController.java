@@ -1,13 +1,20 @@
 package com.opencode.alumxbackend.groupchat.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.opencode.alumxbackend.groupchat.dto.GroupChatRequest;
 import com.opencode.alumxbackend.groupchat.dto.GroupChatResponse;
 import com.opencode.alumxbackend.groupchat.model.GroupChat;
 import com.opencode.alumxbackend.groupchat.service.GroupChatService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/group-chats")
@@ -52,3 +59,21 @@ public class GroupChatController {
                 .build();
     }
 }
+
+/*{
+  "groupId": 6,
+  "name": "My ggs",
+  "participants": [
+    {
+      "id": 13,
+      "userId": 67,
+      "username": "som"
+    },
+    {
+      "id": 14,
+      "userId": 68,
+      "username": "jj"
+    }
+  ]
+}
+*/

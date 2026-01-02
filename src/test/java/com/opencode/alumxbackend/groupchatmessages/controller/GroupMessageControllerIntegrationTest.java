@@ -158,6 +158,51 @@ class GroupMessageControllerIntegrationTest {
         assertThat(response).isEmpty();
     }
 
+    @Test
+    @DisplayName("DELETE /api/groups/{groupId}/messages/{messageId} - should delete and not return in get routes")
+    void deleteMessage_RemovesFromGetRoutes() {
+        SendGroupMessageRequest request = new SendGroupMessageRequest();
+        request.setUserId(testUser1.getId());
+        request.setContent("Message to delete");
+
+        GroupMessageResponse created = webClient.post()
+                .uri("/api/groups/" + testGroupId + "/messages")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(GroupMessageResponse.class)
+                .block();
+
+        assertThat(created).isNotNull();
+
+        var deleteResponse = webClient.delete()
+                .uri("/api/groups/" + testGroupId + "/messages/" + created.getId()
+                        + "?userId=" + testUser1.getId())
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+
+        assertThat(deleteResponse).isNotNull();
+        assertThat(deleteResponse.getStatusCode().value()).isEqualTo(204);
+
+        List<?> allMessages = webClient.get()
+                .uri("/api/groups/" + testGroupId + "/messages")
+                .retrieve()
+                .bodyToMono(List.class)
+                .block();
+
+        assertThat(allMessages).isNotNull();
+        assertThat(allMessages).isEmpty();
+
+        List<?> memberMessages = webClient.get()
+                .uri("/api/groups/" + testGroupId + "/messages/user/" + testUser1.getId())
+                .retrieve()
+                .bodyToMono(List.class)
+                .block();
+
+        assertThat(memberMessages).isNotNull();
+        assertThat(memberMessages).isEmpty();
+    }
+
     // ========== FAILURE CASES ==========
 
     @Test
