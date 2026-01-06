@@ -1,8 +1,9 @@
 package com.opencode.alumxbackend.users.controller;
 
-
 import com.opencode.alumxbackend.auth.dto.LoginRequest;
 import com.opencode.alumxbackend.auth.dto.LoginResponse;
+import com.opencode.alumxbackend.jobposts.repository.CommentRepository;
+import com.opencode.alumxbackend.notifications.repository.NotificationRepository;
 import com.opencode.alumxbackend.users.dto.UserProfileResponse;
 import com.opencode.alumxbackend.users.dto.UserProfileUpdateRequest;
 import com.opencode.alumxbackend.users.model.User;
@@ -29,10 +30,14 @@ public class UserControllerTest {
     @LocalServerPort
     private int port;
 
-
-
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -48,8 +53,10 @@ public class UserControllerTest {
 
         webClient = WebClient.create("http://localhost:"+port);
 
+        // Clean up dependent entities first to avoid foreign key constraint violations
+        commentRepository.deleteAll();
+        notificationRepository.deleteAll();
         userRepository.deleteAll();
-
 
         testUser = User.builder()
                 .username("gaurav63")

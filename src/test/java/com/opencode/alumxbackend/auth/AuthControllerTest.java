@@ -2,6 +2,8 @@ package com.opencode.alumxbackend.auth;
 
 import com.opencode.alumxbackend.auth.dto.LoginRequest;
 import com.opencode.alumxbackend.auth.dto.LoginResponse;
+import com.opencode.alumxbackend.jobposts.repository.CommentRepository;
+import com.opencode.alumxbackend.notifications.repository.NotificationRepository;
 import com.opencode.alumxbackend.users.model.User;
 import com.opencode.alumxbackend.users.model.UserRole;
 import com.opencode.alumxbackend.users.repository.UserRepository;
@@ -32,6 +34,12 @@ class AuthControllerTest {
     private UserRepository userRepository;
 
     @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private WebClient webClient;
@@ -44,6 +52,9 @@ class AuthControllerTest {
     void setUp() {
         webClient = WebClient.create("http://localhost:" + port);
 
+        // Clean up dependent entities first to avoid foreign key constraint violations
+        commentRepository.deleteAll();
+        notificationRepository.deleteAll();
         userRepository.deleteAll(); // this line is used to clean teh database
 
         testUser = User.builder()
