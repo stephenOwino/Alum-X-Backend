@@ -7,17 +7,21 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 /**
- * WebSocket configuration for real-time group chat messaging.
+ * WebSocket configuration for real-time messaging (group chat and one-to-one chat).
  * 
  * Configuration overview:
  * - Clients connect via: /ws
- * - Clients subscribe to: /topic/group/{groupId}
- * - Messages sent from server to: /topic/group/{groupId}
+ * - Clients subscribe to:
+ *   - Group chat: /topic/group/{groupId}
+ *   - One-to-one chat: /topic/chat/{chatId}
+ * - Messages sent from server to:
+ *   - Group chat: /topic/group/{groupId}
+ *   - One-to-one chat: /topic/chat/{chatId}
  * 
  * Flow:
- * 1. Client sends message via REST API (POST /api/groups/{groupId}/messages)
+ * 1. Client sends message via REST API
  * 2. Message is validated and saved to database
- * 3. Server broadcasts message to /topic/group/{groupId} via WebSocket
+ * 3. Server broadcasts message to appropriate topic via WebSocket
  * 4. All clients subscribed to that topic receive the message instantly
  */
 @Configuration

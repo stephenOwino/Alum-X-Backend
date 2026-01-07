@@ -2,6 +2,7 @@ package com.opencode.alumxbackend.chat.service;
 
 import java.util.Optional;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     @Override
@@ -82,7 +84,7 @@ public class ChatServiceImpl implements ChatService {
                 .build()
         );
 
-        return ChatSendResponse.builder()
+        ChatSendResponse response = ChatSendResponse.builder()
             .messageId(message.getMessageID())
             .chatId(chatId)
             .senderUsername(sender.getUsername())
@@ -90,6 +92,10 @@ public class ChatServiceImpl implements ChatService {
             .content(message.getContent())
             .createdAt(message.getCreatedAt())
             .build();
+
+        messagingTemplate.convertAndSend("/topic/chat/" + chatId, response);
+
+        return response;
     }
 
 }
